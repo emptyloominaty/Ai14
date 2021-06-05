@@ -45,7 +45,20 @@ class Eobject {
 
 let createNewObject = function(name, x=0, y=0, rotation=0,width=20,height=20,color ="#FFFFFF") {
     let id = eObjects.length
-    eObjects.push(new Eobject(name,x,y,rotation,id,width,height,color))
+
+    for (let i = 0; i < eObjects.length; i++) {
+        if (eObjects[i]===undefined) {
+            id = i
+            break
+        }
+    }
+
+    if (id===eObjects.length) {
+        eObjects.push(new Eobject(name,x,y,rotation,id,width,height,color))
+    } else {
+        eObjects[id]=new Eobject(name,x,y,rotation,id,width,height,color)
+    }
+
     return id
 }
 

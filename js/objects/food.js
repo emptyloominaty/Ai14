@@ -28,5 +28,19 @@ class Food {
 
 let createNewFood = function(x,y,type,size) {
     let id = foodArray.length
-    foodArray.push(new Food(x,y,type,size,id))
+
+    for (let i = 0; i < foodArray.length; i++) {
+        if (foodArray[i]===undefined) {
+            id = i
+            break
+        }
+    }
+
+    if (id===foodArray.length) {
+        foodArray.push(new Food(x,y,type,size,id))
+    } else {
+        foodArray[id]=new Food(x,y,type,size,id)
+    }
+
+
 }

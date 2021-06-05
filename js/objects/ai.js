@@ -42,10 +42,7 @@ class Ai14 {
     constructor(name,x,y,genes,id) {
         this.genes = JSON.parse(JSON.stringify(genes))
         this.mutation()
-        this.maxAge = Math.random()*22000
-        if (this.maxAge<7000) {
-            this.maxAge = 7000
-        }
+        this.maxAge = 20000+Math.random()*15000
         this.id = id
         this.name = name
         this.x = x
@@ -57,7 +54,7 @@ class Ai14 {
         this.energy = this.maxEnergy/2
         this.objectId = createNewObject(name,x,y,Math.random()*360, this.getSize(), this.getSize(), this.color)
         eObjects[this.objectId].name = this.genes.family+"|"+this.genes.genus+"|"+this.genes.specie
-        eObjects[this.objectId].text = this.genes.familyMut+"|"+this.genes.genusMut
+        eObjects[this.objectId].text = Math.round(this.genes.size*100)/100+"|"+Math.round(this.genes.speed*100)/100
     }
 
     getSize() {
@@ -135,7 +132,9 @@ class Ai14 {
     moveForward() {
         eObjects[this.objectId].rotation = this.rotation
         eObjects[this.objectId].move(this.speed)
-        this.energy -= ((this.genes.speed) / this.genes.speedEf) * (this.genes.size)
+        this.energy -= ((Math.pow(this.genes.speed,2)) / this.genes.speedEf) * Math.pow(this.genes.size,1.6)
+
+
         this.updatePosition()
     }
 
@@ -205,27 +204,68 @@ class Ai14 {
     }
     mutation() {
         let mut = 0
-        //------------------------------Size
+        //------------------------------Size TODO:FUNCTION PLS mutateVal(name,random,max,min)
         if (Math.random()<0.10) {
             mut++
-            this.genes.size+=Math.random()/20
+            this.genes.size+=Math.random()/5
         } else if (Math.random()>0.90) {
             mut++
-            this.genes.size-=Math.random()/20
+            this.genes.size-=Math.random()/5
         }
         if (this.genes.size>3) {this.genes.size=3}
         if (this.genes.size<0.2) {this.genes.size=0.2}
         //------------------------------Speed
         if (Math.random()<0.10) {
             mut++
-            this.genes.speed+=Math.random()/20
+            this.genes.speed+=Math.random()/5
         } else if (Math.random()>0.90) {
             mut++
-            this.genes.speed-=Math.random()/20
+            this.genes.speed-=Math.random()/5
         }
         if (this.genes.speed>2.5) {this.genes.speed=2.5}
         if (this.genes.speed<0.15) {this.genes.speed=0.15}
-        //TODO:------------------------------
+        //------------------------------Vision
+        if (Math.random()<0.10) {
+            mut++
+            this.genes.vision+=Math.random()*5
+        } else if (Math.random()>0.90) {
+            mut++
+            this.genes.vision-=Math.random()*5
+        }
+        if (this.genes.vision>200) {this.genes.vision=200}
+        if (this.genes.vision<10) {this.genes.vision=10}
+        //------------------------------Vision Ef
+        if (Math.random()<0.10) {
+            mut++
+            this.genes.visionEf+=Math.random()/5
+        } else if (Math.random()>0.90) {
+            mut++
+            this.genes.visionEf-=Math.random()/5
+        }
+        if (this.genes.visionEf>5) {this.genes.visionEf=5}
+        if (this.genes.visionEf<0.1) {this.genes.visionEf=0.1}
+        //------------------------------Energy Ef
+        if (Math.random()<0.10) {
+            mut++
+            this.genes.energyEfficiency+=Math.random()/5
+        } else if (Math.random()>0.90) {
+            mut++
+            this.genes.energyEfficiency-=Math.random()/5
+        }
+        if (this.genes.energyEfficiency>2.3) {this.genes.energyEfficiency=2.3}
+        if (this.genes.energyEfficiency<0.5) {this.genes.energyEfficiency=0.5}
+
+        //------------------------------Speed Ef
+        if (Math.random()<0.10) {
+            mut++
+            this.genes.speedEf+=Math.random()/5
+        } else if (Math.random()>0.90) {
+            mut++
+            this.genes.speedEf-=Math.random()/5
+        }
+        if (this.genes.speedEf>2.3) {this.genes.speedEf=2.3}
+        if (this.genes.speedEf<0.5) {this.genes.speedEf=0.5}
+        //-------attack,armor,hearing,smell,hearingEf,smellEf,attackEf,armorEf,stealthVision,stealthHearing
 
 
 
@@ -234,7 +274,7 @@ class Ai14 {
             this.genes.familyMut+=mut
             this.genes.specie = (species[this.genes.family][this.genes.genus]) + 1
 
-            if (this.genes.genusMut>2) {
+            if (this.genes.genusMut>10) {
                 genuses[this.genes.family]++
                 this.genes.genus++
                 this.genes.genusMut=0
@@ -243,7 +283,7 @@ class Ai14 {
                 species[this.genes.family].push(0)
             }
 
-            if (this.genes.familyMut>5) {
+            if (this.genes.familyMut>50) {
                 families++
                 this.genes.family=families
                 this.genes.familyMut=0
@@ -264,5 +304,18 @@ class Ai14 {
 let createNewAi14 = function(name,x,y,genes) {
     let id = ais14.length
     console.log("NEW AI... "+name+" x:"+x+" y:"+y+" id:"+id)
-    ais14.push(new Ai14(name,x,y,genes,id))
+
+
+    for (let i = 0; i < ais14.length; i++) {
+        if (ais14[i]===undefined) {
+            id = i
+            break
+        }
+    }
+
+    if (id===ais14.length) {
+        ais14.push(new Ai14(name,x,y,genes,id))
+    } else {
+        ais14[id]=new Ai14(name,x,y,genes,id)
+    }
 }

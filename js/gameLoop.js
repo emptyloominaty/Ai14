@@ -9,6 +9,10 @@ let el_debug1 = document.getElementById("debug1")
 let el_debug2 = document.getElementById("debug2")
 let el_debug3 = document.getElementById("debug3")
 let el_debug4 = document.getElementById("debug4")
+let el_debug5 = document.getElementById("debug5")
+let el_debug6 = document.getElementById("debug6")
+let el_debug7 = document.getElementById("debug7")
+
 
 let start_perf = 0
 let update_perf = 0
