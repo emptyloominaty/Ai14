@@ -3,6 +3,8 @@ let eObjects = []
 class Eobject {
     text = ""
     text2 = ""
+    age = ""
+    id = ""
     constructor(name,x,y,rotation,id,width,height,color) {
         this.realId = id
         this.name = name

@@ -20,15 +20,27 @@ let redrawScreen = function(objects) {
             screen.fillRect(-o.width/2, -o.height/2, o.width, o.height)
         /*    //-----------------------------ROTATION TEST LINE
             screen.fillStyle = "#000000"
-            screen.fillRect(0, 0, 1, 20)
+            screen.fillRect(0, 0, 1, 20)*/
 
-            screen.rotate(o.rotation * Math.PI / 180)*/
+
             //-----------------------------TEXT
+            screen.rotate(o.rotation * Math.PI / 180)
             screen.fillStyle = "#FFFFFF"
             screen.font = "12px Calibri"
-            screen.fillText(o.name,0,0)
-            screen.fillText(o.text,o.x,o.y-15)
-            screen.fillText(o.text2,o.x,o.y-30)
+
+            if (showId===true) {
+                screen.fillText(o.id, 0, 30)
+            }
+            if (showAge===true) {
+                screen.fillText(o.age, 0, 15)
+            }
+            if (showName===true) {
+                screen.fillText(o.name, 0, 0)
+            }
+            if (showText===true) {
+                screen.fillText(o.text,0,-15)
+                screen.fillText(o.text2,0,-30)
+            }
             screen.restore()
         }
     } else {
@@ -40,9 +52,21 @@ let redrawScreen = function(objects) {
 
             screen.fillStyle = "#FFFFFF"
             screen.font = "12px Calibri"
-            screen.fillText(o.name,o.x,o.y)
-            screen.fillText(o.text,o.x,o.y-15)
-            screen.fillText(o.text2,o.x,o.y-30)
+
+
+            if (showId===true) {
+                screen.fillText(o.id, o.x, o.y+30)
+            }
+            if (showAge===true) {
+                screen.fillText(o.age, o.x, o.y+15)
+            }
+            if (showName===true) {
+                screen.fillText(o.name, o.x, o.y)
+            }
+            if (showText===true) {
+                screen.fillText(o.text,o.x,o.y-15)
+                screen.fillText(o.text2,o.x,o.y-30)
+            }
         }
     }
 

@@ -9,5 +9,9 @@ let backgroundColor = "#000000"
 
 
 
-//Graphics Settings
+//Settings
 let advancedDrawingMode = false //rotation
+let showText = false
+let showName = true
+let showAge = true
+let showId = true

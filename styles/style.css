@@ -1,4 +1,34 @@
 html {
     background-color: #414141;
     color:#fff;
+    font-family: Calibri, serif;
+}
+
+.rowFlex {
+    display:flex;
+    flex-direction: row;
+}
+
+.columnFlex {
+    display:flex;
+    flex-direction: column;
+}
+
+.centerFlex {
+    display:flex;
+    justify-content: center;
+}
+
+.spaceBetweenFlex {
+    justify-content: space-between;
+}
+
+.section {
+    margin:15px;
+}
+
+.perfDiv {
+    position:absolute;
+    top:15px;
+    left:15px;
 }

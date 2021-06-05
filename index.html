@@ -18,24 +18,44 @@
 
 </head>
 <body>
+<div class="perfDiv">
     <p id="fps"> </p>
     <p id="performance"> </p>
     <p id="performance2"> </p>
-    <p id="debug1"> </p>
-    <p id="debug2"> </p>
-    <p id="debug3"> </p>
-    <p id="debug4"> </p>
-    <p id="debug5"> </p>
-    <p id="debug6"> </p>
-    <p id="debug7"> </p>
+</div>
 
-    <label id="val1Text" for="val1">Food Spawn Time: 150ms </label>
-    <input  type="range" min="30" max="3000" value="150" step="1" id="val1">
+
+    <div class="centerFlex">
+        <div class="section">
+            <p id="debug1"> </p>
+            <p id="debug2"> </p>
+            <p id="debug3"> </p>
+            <p id="debug4"> </p>
+            <p id="debug5"> </p>
+            <p id="debug6"> </p>
+            <p id="debug7"> </p>
+        </div>
+        <div class="section">
+            <p id="stats1"> </p>
+            <p id="stats2"> </p>
+            <p id="stats3"> </p>
+            <p id="stats4"> </p>
+            <p id="stats5"> </p>
+            <p id="stats6"> </p>
+        </div>
+    </div>
+
+    <label id="val1Text" for="val1">Food Spawn Time: 350ms </label>
+    <input  type="range" min="30" max="3000" value="350" step="1" id="val1">
+
     <label id="val2Text" for="val2">Food Spawn: 2</label>
     <input  type="range" min="1" max="30" value="2" step="1" id="val2">
 
+    <label id="val3Text" for="val3">Sim Time: 16ms</label>
+    <input  type="range" min="4" max="32" value="16" step="1" id="val3">
 
-
+    <label id="val4Text" for="val4">Redraw Speed: 16ms</label>
+    <input  type="range" min="16" max="200" value="16" step="1" id="val4">
 
     <canvas width="1600" height="900"  id="screen"></canvas>
 

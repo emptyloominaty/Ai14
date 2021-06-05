@@ -42,7 +42,7 @@ class Ai14 {
     constructor(name,x,y,genes,id) {
         this.genes = JSON.parse(JSON.stringify(genes))
         this.mutation()
-        this.maxAge = 20000+Math.random()*15000
+        this.maxAge = 20000+Math.random()*5000
         this.id = id
         this.name = name
         this.x = x
@@ -53,8 +53,9 @@ class Ai14 {
         this.maxEnergy = (this.genes.size*20000) * this.genes.energyEfficiency
         this.energy = this.maxEnergy/2
         this.objectId = createNewObject(name,x,y,Math.random()*360, this.getSize(), this.getSize(), this.color)
-        eObjects[this.objectId].name = this.genes.family+"|"+this.genes.genus+"|"+this.genes.specie
         eObjects[this.objectId].text = Math.round(this.genes.size*100)/100+"|"+Math.round(this.genes.speed*100)/100
+        eObjects[this.objectId].text2 = this.genes.family+"|"+this.genes.genus+"|"+this.genes.specie
+        eObjects[this.objectId].id = "id: "+this.id
     }
 
     getSize() {
@@ -79,14 +80,22 @@ class Ai14 {
         }
         this.updateSize()
         if (this.energy>this.maxEnergy) {this.energy=this.maxEnergy}
-        eObjects[this.objectId].text2 = Math.round(this.energy)
+        eObjects[this.objectId].age = "age: "+Math.round(this.age)
+        eObjects[this.objectId].name = "e:"+Math.round(this.energy)
         if (this.energy<=0 || this.age>this.maxAge) {
             this.die()
         }
     }
 
     destroy() {
-        console.log("objectID: "+this.objectId+" id:"+this.id+" ....DIED")
+        let diedText = "(idk)"
+        if (this.energy<=0) {
+            diedText = "(no energy)"
+        }
+        if (this.age>=this.maxAge) {
+            diedText = "(age)"
+        }
+        console.log("objectID: "+this.objectId+" id:"+this.id+" ....DIED "+diedText)
         eObjects[this.objectId] = undefined
         ais14[this.id] = undefined
     }
@@ -204,70 +213,30 @@ class Ai14 {
     }
     mutation() {
         let mut = 0
-        //------------------------------Size TODO:FUNCTION PLS mutateVal(name,random,max,min)
-        if (Math.random()<0.10) {
-            mut++
-            this.genes.size+=Math.random()/5
-        } else if (Math.random()>0.90) {
-            mut++
-            this.genes.size-=Math.random()/5
+        let mutate = (name,randomDiv,max,min,randomInc,randomDec) => {
+            if (Math.random()<randomInc) {
+                mut++
+                this.genes[name]+=Math.random()/randomDiv
+            } else if (Math.random()>randomDec) {
+                mut++
+                this.genes[name]-=Math.random()/randomDiv
+            }
+            if (this.genes[name]>max) {this.genes[name]=max}
+            if (this.genes[name]<min) {this.genes[name]=min}
         }
-        if (this.genes.size>3) {this.genes.size=3}
-        if (this.genes.size<0.2) {this.genes.size=0.2}
+        //------------------------------Size
+        mutate("size",5,3,0.2,0.1,0.9)
         //------------------------------Speed
-        if (Math.random()<0.10) {
-            mut++
-            this.genes.speed+=Math.random()/5
-        } else if (Math.random()>0.90) {
-            mut++
-            this.genes.speed-=Math.random()/5
-        }
-        if (this.genes.speed>2.5) {this.genes.speed=2.5}
-        if (this.genes.speed<0.15) {this.genes.speed=0.15}
+        mutate("speed",5,2.5,0.15,0.2,0.8)
         //------------------------------Vision
-        if (Math.random()<0.10) {
-            mut++
-            this.genes.vision+=Math.random()*5
-        } else if (Math.random()>0.90) {
-            mut++
-            this.genes.vision-=Math.random()*5
-        }
-        if (this.genes.vision>200) {this.genes.vision=200}
-        if (this.genes.vision<10) {this.genes.vision=10}
+        mutate("vision",0.2,200,10,0.1,0.9)
         //------------------------------Vision Ef
-        if (Math.random()<0.10) {
-            mut++
-            this.genes.visionEf+=Math.random()/5
-        } else if (Math.random()>0.90) {
-            mut++
-            this.genes.visionEf-=Math.random()/5
-        }
-        if (this.genes.visionEf>5) {this.genes.visionEf=5}
-        if (this.genes.visionEf<0.1) {this.genes.visionEf=0.1}
+        mutate("visionEf",5,5,0.1,0.1,0.9)
         //------------------------------Energy Ef
-        if (Math.random()<0.10) {
-            mut++
-            this.genes.energyEfficiency+=Math.random()/5
-        } else if (Math.random()>0.90) {
-            mut++
-            this.genes.energyEfficiency-=Math.random()/5
-        }
-        if (this.genes.energyEfficiency>2.3) {this.genes.energyEfficiency=2.3}
-        if (this.genes.energyEfficiency<0.5) {this.genes.energyEfficiency=0.5}
-
+        mutate("energyEfficiency",5,2.3,0.5,0.05,0.95)
         //------------------------------Speed Ef
-        if (Math.random()<0.10) {
-            mut++
-            this.genes.speedEf+=Math.random()/5
-        } else if (Math.random()>0.90) {
-            mut++
-            this.genes.speedEf-=Math.random()/5
-        }
-        if (this.genes.speedEf>2.3) {this.genes.speedEf=2.3}
-        if (this.genes.speedEf<0.5) {this.genes.speedEf=0.5}
+        mutate("speedEf",5,2.3,0.5,0.07,0.93)
         //-------attack,armor,hearing,smell,hearingEf,smellEf,attackEf,armorEf,stealthVision,stealthHearing
-
-
 
         if (mut>0) {
             this.genes.genusMut+=mut
@@ -303,8 +272,6 @@ class Ai14 {
 
 let createNewAi14 = function(name,x,y,genes) {
     let id = ais14.length
-    console.log("NEW AI... "+name+" x:"+x+" y:"+y+" id:"+id)
-
 
     for (let i = 0; i < ais14.length; i++) {
         if (ais14[i]===undefined) {
@@ -318,4 +285,5 @@ let createNewAi14 = function(name,x,y,genes) {
     } else {
         ais14[id]=new Ai14(name,x,y,genes,id)
     }
+    console.log("NEW AI... "+name+" x:"+x+" y:"+y+" id:"+id)
 }
