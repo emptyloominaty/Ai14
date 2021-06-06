@@ -24,8 +24,9 @@ class Ai14 {
         energyEfficiency: 1,
         color: "#33DD33",
         attack: 1,
-        armor: 0,
-        foodTypes: [1], //0="meat"
+        armor: 1,
+        foodTypes: [1],
+        carnivore: 0,
         vision: 80,
         hearing: 30,
         smell: 20,
@@ -37,7 +38,8 @@ class Ai14 {
         armorEf: 1,
         stealthVision: 30,
         stealthHearing: 10,
-
+        waitTime: 10,
+        waitChance: 0.01,
     }
     constructor(name,x,y,genes,id) {
         this.genes = JSON.parse(JSON.stringify(genes))
@@ -56,10 +58,11 @@ class Ai14 {
         eObjects[this.objectId].text = Math.round(this.genes.size*100)/100+"|"+Math.round(this.genes.speed*100)/100
         eObjects[this.objectId].text2 = this.genes.family+"|"+this.genes.genus+"|"+this.genes.specie
         eObjects[this.objectId].id = "id: "+this.id
+        eObjects[this.objectId].family = this.genes.family
     }
 
     getSize() {
-        return 5+(this.size*(this.energy/20000))*35
+        return (1+(this.size*this.size)+((this.energy/20000)))*10
     }
 
     updateSize() {
@@ -68,9 +71,16 @@ class Ai14 {
         eObjects[this.objectId].height = sizePx
     }
 
-    update() { //every frame
+    update() {
         this.multiply()
-        this.energy--
+        if (this.full>0) {this.full--}
+        if (this.move>0) {
+            this.move--
+            this.energy-=0.5
+        } else {
+
+            this.energy--
+        }
         this.age++
         this.see()
         if (this.target===1) {
@@ -81,7 +91,7 @@ class Ai14 {
         this.updateSize()
         if (this.energy>this.maxEnergy) {this.energy=this.maxEnergy}
         eObjects[this.objectId].age = "age: "+Math.round(this.age)
-        eObjects[this.objectId].name = "e:"+Math.round(this.energy)
+        eObjects[this.objectId].name = Math.round(this.energy)
         if (this.energy<=0 || this.age>this.maxAge) {
             this.die()
         }
@@ -113,10 +123,6 @@ class Ai14 {
         this.destroy()
     }
 
-    attack() {
-
-    }
-
     moveRandom() {
         let rng = Math.random()
 
@@ -128,7 +134,16 @@ class Ai14 {
             this.rotation-=5
         }
 
-        this.moveForward()
+
+
+        if (this.genes.waitTime>1 && this.genes.waitChance>0.001 && rng<this.genes.waitChance) {
+            this.move=this.genes.waitTime+Math.random()*(this.genes.waitTime*6)
+        }
+
+        if (this.move<1) {
+            this.moveForward()
+        }
+
     }
 
     moveTowards() {
@@ -140,8 +155,8 @@ class Ai14 {
 
     moveForward() {
         eObjects[this.objectId].rotation = this.rotation
-        eObjects[this.objectId].move(this.speed)
-        this.energy -= ((Math.pow(this.genes.speed,2)) / this.genes.speedEf) * Math.pow(this.genes.size,1.6)
+        eObjects[this.objectId].move(this.speed/(0.5+(this.genes.size/2)))
+        this.energy -= ((Math.pow(this.genes.speed,2)) / this.genes.speedEf)+(this.genes.armor/this.genes.armorEf)+((this.genes.attack/this.genes.attackEf)/2)
 
 
         this.updatePosition()
@@ -161,43 +176,89 @@ class Ai14 {
     }
 
     see() {
-        if (this.genes.vision>0) {
-            this.energy -= (this.genes.vision / this.genes.visionEf) / 50
+        if (this.genes.vision>0 && this.move<1) {
+            this.energy -= ((Math.pow(this.genes.vision,1.3)) / this.genes.visionEf) / 80
 
             this.target = 0
-            //FOOD
-            let distanceArray = []
-            for (let i = 0; i < foodArray.length; i++) {
-                if (foodArray[i]!==undefined) {
-                    let getDistance = getObjectDistance(this.objectId, foodArray[i].objectId)
-                    if (getDistance!==undefined) {
-                        distanceArray.push({id: foodArray[i].id, distance: getDistance})
+            //-----------------------------------------------------------------------------------------------------ATTACK
+            if (this.genes.carnivore===1) {
+
+                let distanceArray = []
+                for (let i = 0; i < ais14.length; i++) {
+                    if (ais14[i]!==undefined) {
+                        if ((ais14[i].genes.carnivore === 0 || this.energy < this.maxEnergy / 3) && ais14[i].size < this.size && ais14[i].genes.armor < this.genes.attack) {
+                            let getDistance = getObjectDistance(this.objectId, ais14[i].objectId)
+                            if (getDistance !== undefined && getDistance < this.genes.vision ) {
+                                distanceArray.push({id: ais14[i].id, distance: getDistance})
+                            }
+                        }
+                    }
+                }
+
+                if (distanceArray.length > 0) {
+                    distanceArray.sort(function (a, b) {
+                        return a.distance - b.distance
+                    })
+
+                    if (distanceArray[0].distance < this.genes.vision) {
+                        let objFollow = ais14[distanceArray[0].id].objectId
+                        objFollow = eObjects[objFollow]
+                        if (objFollow) {
+                            this.moveCoordinates = {x: objFollow.x+1, y: objFollow.y+1}
+                            this.target = 1
+                        }
+
+                        if (distanceArray[0].distance<10) { //EAT
+                            let damage =(this.genes.attack-ais14[distanceArray[0].id].genes.armor)*30
+                            if (damage<0) {damage=0}
+                            this.energy -= (this.genes.attack/this.genes.attackEf)*5
+                            this.energy += damage
+                            ais14[distanceArray[0].id].energy -= damage
+                            this.target = 0
+                        }
+
+                    }
+                }
+
+            }
+            //-----------------------------------------------------------------------------------------------------FOOD
+            if (this.full<1) {
+                let distanceArray = []
+                for (let i = 0; i < foodArray.length; i++) {
+                    if (foodArray[i]!==undefined) {
+                        let getDistance = getObjectDistance(this.objectId, foodArray[i].objectId)
+                        if (getDistance!==undefined && getDistance<this.genes.vision) {
+                            distanceArray.push({id: foodArray[i].id, distance: getDistance})
+                        }
+                    }
+                }
+
+                if (distanceArray.length > 0) {
+                    distanceArray.sort(function (a, b) {
+                        return a.distance - b.distance
+                    })
+
+                    if (distanceArray[0].distance < this.genes.vision) {
+                        let objFollow = foodArray[distanceArray[0].id].objectId
+                        objFollow = eObjects[objFollow]
+                        if (objFollow) {
+                            this.moveCoordinates = {x: objFollow.x+1, y: objFollow.y+1}
+                            this.target = 1
+                        }
+
+                        if (distanceArray[0].distance<5) { //EAT
+                            this.energy+=(foodArray[distanceArray[0].id].size*500)*this.genes.energyEfficiency
+                            foodArray[distanceArray[0].id].destroy()
+                            this.target = 0
+                            this.full = 20
+                        }
+
                     }
                 }
             }
+            //--------------------------------------------------------------------------------------------------------
 
-            if (distanceArray.length > 0) {
 
-                distanceArray.sort(function (a, b) {
-                    return a.distance - b.distance
-                })
-
-                if (distanceArray[0].distance < this.genes.vision) {
-                    let objFollow = foodArray[distanceArray[0].id].objectId
-                    objFollow = eObjects[objFollow]
-                    if (objFollow) {
-                        this.moveCoordinates = {x: objFollow.x+1, y: objFollow.y+1}
-                        this.target = 1
-                    }
-
-                    if (distanceArray[0].distance<5) { //EAT
-                        this.energy+=(foodArray[distanceArray[0].id].size*500)*this.genes.energyEfficiency
-                        foodArray[distanceArray[0].id].destroy()
-                        this.target = 0
-                    }
-
-                }
-            }
         }
     }
 
@@ -224,19 +285,27 @@ class Ai14 {
             if (this.genes[name]>max) {this.genes[name]=max}
             if (this.genes[name]<min) {this.genes[name]=min}
         }
-        //------------------------------Size
         mutate("size",5,3,0.2,0.1,0.9)
-        //------------------------------Speed
-        mutate("speed",5,2.5,0.15,0.2,0.8)
-        //------------------------------Vision
-        mutate("vision",0.2,200,10,0.1,0.9)
-        //------------------------------Vision Ef
+        mutate("speed",5,5,0.15,0.2,0.8)
+        mutate("vision",0.1,200,10,0.1,0.9)
         mutate("visionEf",5,5,0.1,0.1,0.9)
-        //------------------------------Energy Ef
         mutate("energyEfficiency",5,2.3,0.5,0.05,0.95)
-        //------------------------------Speed Ef
         mutate("speedEf",5,2.3,0.5,0.07,0.93)
-        //-------attack,armor,hearing,smell,hearingEf,smellEf,attackEf,armorEf,stealthVision,stealthHearing
+        if (this.genes.carnivore===0 && Math.random()>0.99) {
+            this.genes.carnivore=1
+            this.genes.color = "#e55354"
+        }
+        if (this.genes.carnivore===1 && Math.random()>0.99) {
+            this.genes.carnivore=0
+            this.genes.color = "#33DD33"
+        }
+        mutate("attack",5,2,0.1,0.15,0.85)
+        mutate("armor",2,3,0,0.15,0.85)
+        mutate("attackEf",5,2.3,0.5,0.07,0.93)
+        mutate("armorEf",5,2.3,0.5,0.07,0.93)
+        mutate("waitTime",5,60,0.5,0.3,0.7)
+        mutate("waitChance",200,0.25,0.0009,0.3,0.7)
+        //-------hearing,smell,hearingEf,smellEf,stealthVision,stealthHearing
 
         if (mut>0) {
             this.genes.genusMut+=mut

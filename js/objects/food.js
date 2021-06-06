@@ -4,7 +4,7 @@ class Food {
     objectId = 0
     constructor(x,y,type = 1,size=1,id) {
         this.life = 1000+Math.random()*1000
-        this.name="food"
+        this.name=""
         this.size =size
         if (type===1) {
             this.color = "#ffa85b"

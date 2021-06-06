@@ -5,6 +5,7 @@ class Eobject {
     text2 = ""
     age = ""
     id = ""
+    family = ""
     constructor(name,x,y,rotation,id,width,height,color) {
         this.realId = id
         this.name = name

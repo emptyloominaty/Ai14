@@ -1,6 +1,7 @@
 initGame()
 let lastRender = 0
 let timeSec = 0
+let progress = 16.666666666666666666666666666667
 let gameFPS = 60
 let el_fps = document.getElementById("fps")
 let el_performance = document.getElementById("performance")
@@ -21,9 +22,27 @@ let el_stats4 = document.getElementById("stats4")
 let el_stats5 = document.getElementById("stats5")
 let el_stats6 = document.getElementById("stats6")
 
+let el_stats7 = document.getElementById("stats7")
+let el_stats8 = document.getElementById("stats8")
+let el_stats9 = document.getElementById("stats9")
+let el_stats10 = document.getElementById("stats10")
+let el_stats11 = document.getElementById("stats11")
+let el_stats12 = document.getElementById("stats12")
+
+let el_stats13 = document.getElementById("stats13")
+
+
+
 let start_perf = 0
 let update_perf = 0
+let startDraw_perf = 0
 let draw_perf = 0
+let startSimFrame = 0
+let endSimFrame = 0
+let startDrawFrame = 0
+let endDrawFrame = 0
+let simFrame = 0
+let drawFrame = 0
 
 let spawnFoodTime = 350
 let spawnFood = 2
@@ -41,8 +60,23 @@ let foodSpawnInterval = setInterval(function() {
     }
 },spawnFoodTime)
 
+let updateInterval= setInterval(function() {
+   update(progress)
+},simTime)
+
+let drawInterval =  setInterval(function() {
+    draw(progress)
+},drawTime)
+
+
+
+
 function update(progress) {
     start_perf = performance.now()
+    startSimFrame = start_perf
+    simFrame = startSimFrame-endSimFrame
+    endSimFrame = performance.now()
+
     gameFPS = 1/progress*1000
     timeSec += progress/1000
     //------------------------------------------------------------------------inputs
@@ -61,22 +95,6 @@ function update(progress) {
         },spawnFoodTime)
     }
     newSpawnFoodTime = spawnFoodTime
-
-
-    simTime = document.getElementById("val3").value
-    drawTime = document.getElementById("val4").value
-    document.getElementById("val3Text").innerText = "Sim Time: "+simTime+"ms"
-    document.getElementById("val4Text").innerText = "Redraw Speed: "+drawTime+"ms"
-
-
-
-
-
-    //CREATE FOOD ON MOUSE CLICK (LEFT)
-
-    //CREATE AIS ON MOUSE CLICK (RIGHT)
-
-
     //------------------------------------------------------------------------
 
     for (let i = 0; i<ais14.length; i++) {
@@ -95,6 +113,10 @@ function update(progress) {
 }
 
 function draw(progress) {
+    startDraw_perf = performance.now()
+    startDrawFrame = startDraw_perf
+    drawFrame = startDrawFrame-endDrawFrame
+    endDrawFrame = performance.now()
     let countDefined = function(array) {
         let arrayReturn = []
         for (let i = 0; i < array.length; i++) {
@@ -117,6 +139,7 @@ function draw(progress) {
         return returnVal/nOfVals
     }
 
+
     el_fps.innerText = "FPS: "+Math.round(1/progress*1000)
     el_debug1.innerText = "Objects: "+countDefined(eObjects)+"/"+eObjects.length
     el_debug2.innerText = "Ai: "+countDefined(ais14)+"/"+ais14.length
@@ -128,20 +151,44 @@ function draw(progress) {
     el_stats2.innerText = "Avg Speed:"+Math.round(getAvgStats("speed")*100)/100
     el_stats3.innerText = "Avg Vis:"+Math.round(getAvgStats("vision")*100)/100
     el_stats4.innerText = "Avg Ef:"+Math.round(getAvgStats("energyEfficiency")*100)/100
+    el_stats5.innerText = "Avg waitTime:"+Math.round(getAvgStats("waitTime")*100)/100
+    el_stats6.innerText = "Avg waitChance:"+Math.round(getAvgStats("waitChance")*1000)/1000
 
+    el_stats7.innerText = "Avg Armor:"+Math.round(getAvgStats("armor")*100)/100
+    el_stats8.innerText = "Avg Attack:"+Math.round(getAvgStats("attack")*100)/100
 
+    el_stats13.innerHTML = getArrayStats()
 
+    el_performance2.innerText = "Sim Speed: "+Math.round(simFrame)+"ms ("+Math.round(1/simFrame*1000)+"FPS) Draw Speed:"+Math.round(drawFrame)+"ms ("+Math.round(1/drawFrame*1000)+"FPS)"
         redrawScreen(eObjects)
     draw_perf = performance.now()
-    el_performance.innerText = "Cpu: "+Math.round((update_perf-start_perf)*100)/100 +" gpu:"+Math.round((draw_perf-update_perf)*100)/100+" total:"+Math.round((draw_perf-start_perf)*100)/100
-}
+ }
 
 
 function loop(timestamp) {
-    let progress = timestamp - lastRender
+    progress = timestamp - lastRender
 
-    update(progress)
-    draw(progress)
+    simTime = document.getElementById("val3").value
+    drawTime = document.getElementById("val4").value
+    document.getElementById("val3Text").innerText = "Sim Time: "+simTime+"ms"
+    document.getElementById("val4Text").innerText = "Redraw Speed: "+drawTime+"ms"
+
+    if (newDrawTime!==drawTime ) {
+        clearInterval(drawInterval)
+        drawInterval =  setInterval(function() {
+            draw(progress)
+        },drawTime)
+    }
+
+    if (newSimTime!==simTime ) {
+        clearInterval(updateInterval)
+        updateInterval= setInterval(function() {
+            update(progress)
+        },simTime)
+    }
+
+    newSimTime = simTime
+    newDrawTime = drawTime
 
     lastRender = timestamp
     window.requestAnimationFrame(loop)

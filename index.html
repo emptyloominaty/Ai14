@@ -7,6 +7,7 @@
     <link rel="stylesheet" type="text/css" href="styles/style.css">
 
     <script src="js/config.js" defer></script>
+    <script src="js/functions/functions.js" defer></script>
 
     <script src="js/objects/eobjects.js" defer></script>
     <script src="js/objects/food.js" defer></script>
@@ -15,6 +16,7 @@
     <script src="js/init.js" defer></script>
     <script src="js/draw.js" defer></script>
     <script src="js/gameLoop.js" defer></script>
+    <script src="js/mouse.js" defer></script>
 
 </head>
 <body>
@@ -43,6 +45,37 @@
             <p id="stats5"> </p>
             <p id="stats6"> </p>
         </div>
+        <div class="section">
+            <p id="stats7"> </p>
+            <p id="stats8"> </p>
+            <p id="stats9"> </p>
+            <p id="stats10"> </p>
+            <p id="stats11"> </p>
+            <p id="stats12"> </p>
+        </div>
+        <div class="section">
+            <p id="stats13"> </p>
+            <select id="getStats">
+                <option value="size">size</option>
+                <option value="speed">speed</option>
+                <option value="vision">vision</option>
+                <option value="attack">attack</option>
+                <option value="armor">armor</option>
+                <option value="waitTime">waitTime</option>
+                <option value="waitChance">waitChance</option>
+            </select>
+        </div>
+        <div class="section columnFlex">
+            Settings
+            <button id="btnSetting0" onclick="toggleSetting(0)"></button>
+            <button id="btnSetting1" onclick="toggleSetting(1)"></button>
+            <button id="btnSetting2" onclick="toggleSetting(2)"></button>
+            <button id="btnSetting3" onclick="toggleSetting(3)"></button>
+            <button id="btnSetting4" onclick="toggleSetting(4)"></button>
+            <button id="btnSetting5" onclick="toggleSetting(5)"></button>
+            <button id="btnSetting6" onclick="toggleSetting(6)"></button>
+            <button id="btnSetting7" onclick="toggleSetting(7)"></button>
+        </div>
     </div>
 
     <label id="val1Text" for="val1">Food Spawn Time: 350ms </label>
@@ -55,7 +88,7 @@
     <input  type="range" min="4" max="32" value="16" step="1" id="val3">
 
     <label id="val4Text" for="val4">Redraw Speed: 16ms</label>
-    <input  type="range" min="16" max="200" value="16" step="1" id="val4">
+    <input  type="range" min="16" max="400" value="16" step="1" id="val4">
 
     <canvas width="1600" height="900"  id="screen"></canvas>
 
