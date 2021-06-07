@@ -76,7 +76,7 @@ let getArrayStats = function() {
 
         let valColor = "#99ff7e"
         let rangeColor =  "#9d9d9d"
-        returnStr = name+":<div  style='color:"+rangeColor+"'>  ("+Math.round(p1*1000)/1000+" - "+Math.round(p2*1000)/1000+"): <span style='color:"+valColor+"'>"+ p1a+"</span>"+
+        returnStr = "<div  style='color:"+rangeColor+"'>  ("+Math.round(p1*1000)/1000+" - "+Math.round(p2*1000)/1000+"): <span style='color:"+valColor+"'>"+ p1a+"</span>"+
             "<br> ("+Math.round(p2*1000)/1000+" - "+Math.round(p3*1000)/1000+"): <span style='color:"+valColor+"'>"+ p2a+"</span>"+
             "<br> ("+Math.round(p3*1000)/1000+" - "+Math.round(p4*1000)/1000+"): <span style='color:"+valColor+"'>"+ p3a+"</span>"+
             "<br> ("+Math.round(p4*1000)/1000+" - "+Math.round(p5*1000)/1000+"): <span style='color:"+valColor+"'>"+ p4a+"</span>"+

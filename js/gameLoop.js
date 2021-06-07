@@ -13,7 +13,6 @@ let el_debug3 = document.getElementById("debug3")
 let el_debug4 = document.getElementById("debug4")
 let el_debug5 = document.getElementById("debug5")
 let el_debug6 = document.getElementById("debug6")
-let el_debug7 = document.getElementById("debug7")
 
 let el_stats1 = document.getElementById("stats1")
 let el_stats2 = document.getElementById("stats2")
@@ -147,15 +146,15 @@ function draw(progress) {
     el_debug4.innerText = "Sim Time: "+Math.round(timeSec)+" Sec"
     el_debug5.innerText = "Gen: "+Math.round((timeSec/375)*100)/100
 
-    el_stats1.innerText = "Avg Size:"+Math.round(getAvgStats("size")*100)/100
-    el_stats2.innerText = "Avg Speed:"+Math.round(getAvgStats("speed")*100)/100
-    el_stats3.innerText = "Avg Vis:"+Math.round(getAvgStats("vision")*100)/100
-    el_stats4.innerText = "Avg Ef:"+Math.round(getAvgStats("energyEfficiency")*100)/100
-    el_stats5.innerText = "Avg waitTime:"+Math.round(getAvgStats("waitTime")*100)/100
-    el_stats6.innerText = "Avg waitChance:"+Math.round(getAvgStats("waitChance")*1000)/1000
+    el_stats1.innerText = "Avg Size: "+Math.round(getAvgStats("size")*100)/100
+    el_stats2.innerText = "Avg Speed: "+Math.round(getAvgStats("speed")*100)/100
+    el_stats3.innerText = "Avg Vis: "+Math.round(getAvgStats("vision")*100)/100
+    el_stats4.innerText = "Avg Ef: "+Math.round(getAvgStats("energyEfficiency")*100)/100
+    el_stats5.innerText = "Avg waitTime: "+Math.round(getAvgStats("waitTime")*100)/100
+    el_stats6.innerText = "Avg waitChance: "+Math.round(getAvgStats("waitChance")*1000)/1000
 
-    el_stats7.innerText = "Avg Armor:"+Math.round(getAvgStats("armor")*100)/100
-    el_stats8.innerText = "Avg Attack:"+Math.round(getAvgStats("attack")*100)/100
+    el_stats7.innerText = "Avg Armor: "+Math.round(getAvgStats("armor")*100)/100
+    el_stats8.innerText = "Avg Attack: "+Math.round(getAvgStats("attack")*100)/100
 
     el_stats13.innerHTML = getArrayStats()
 

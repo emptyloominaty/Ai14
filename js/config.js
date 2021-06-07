@@ -36,9 +36,19 @@ let el_btnSetting = [document.getElementById("btnSetting0"),
 //init
 for (let i = 0; i<el_btnSetting.length; i++) {
     el_btnSetting[i].innerText = settingsNames[i]+": "+ toggleBool[+settings[settingsVal[i]]]
+    if (settings[settingsVal[i]]===false) {
+        el_btnSetting[i].classList.add("buttonOff")
+    }
 }
 
 let toggleSetting = function(num) {
     settings[settingsVal[num]] = !settings[settingsVal[num]]
     el_btnSetting[num].innerText = settingsNames[num]+": "+ toggleBool[+settings[settingsVal[num]]]
+
+    if (settings[settingsVal[num]]===false) {
+        el_btnSetting[num].classList.add("buttonOff")
+    } else {
+        el_btnSetting[num].classList.remove("buttonOff")
+    }
+
 }

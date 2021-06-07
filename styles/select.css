@@ -1,0 +1,15 @@
+select {
+    border: 0;
+    box-shadow:0 0 4px 0 #000000;
+    outline: none;
+    background: rgba(157, 157, 157, 0.2);
+    padding:5px;
+    width: 100%;
+    color: #ffffff;
+    text-align-last:center;
+}
+
+option {
+    text-align:center;
+    background-color: #555555;
+}

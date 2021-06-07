@@ -1,7 +1,12 @@
 html {
-    background-color: #414141;
+    background-color: #343434;
     color:#fff;
     font-family: Calibri, serif;
+}
+@media (max-width: 1620px) {
+    canvas {
+        width: 100%;
+    }
 }
 
 .rowFlex {
@@ -24,7 +29,11 @@ html {
 }
 
 .section {
-    margin:15px;
+    margin: 8px;
+    padding: 8px;
+    border-radius:4px;
+    box-shadow:0 0 4px 1px #000;
+    background-color: rgba(255, 255, 255, 0.04);
 }
 
 .perfDiv {
@@ -32,8 +41,39 @@ html {
     top:15px;
     left:15px;
 }
+@media (max-width: 1650px) {
+    .perfDiv {
+        position:relative;
+        max-width:450px;
+        display:flex;
+        margin:0 auto;
+        margin-bottom:10px;
+        top:0;
+        left:0;
+       /* display:none;*/
+    }
+}
 
 
+.sliderDiv {
+    flex-wrap:wrap;
+    max-width: 1180px;
+    margin: 0 auto;
+    margin-top:5px;
+    margin-bottom:15px;
+}
+
+.sliderLabel {
+    margin-left:20px;
+}
+
+.centerText {
+    text-align:center;
+}
+
+.flexwrap {
+    flex-wrap:wrap;
+}
 
 
 /*--------------------------------------------------------*/
