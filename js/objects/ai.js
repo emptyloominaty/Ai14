@@ -267,6 +267,7 @@ class Ai14 {
     }
 
     multiply() {
+        if (settings.limitAi===true && countDefined(ais14)>limitAiVal) {return false}
         if (this.energy>this.maxEnergy/1.35) {
             this.energy=this.energy/2
             createNewAi14(this.name,this.x+32,this.y+32,this.genes)

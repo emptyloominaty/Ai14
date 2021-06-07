@@ -54,6 +54,7 @@ let newSimTime = 16
 let newDrawTime = 16
 
 let foodSpawnInterval = setInterval(function() {
+    if (settings.limitFood===true && countDefined(foodArray)>limitFoodVal) {return false}
     for (let i = 0; i<=spawnFood; i++) {
         createNewFood(Math.random()*mapWidth,Math.random()*mapHeight,1,4+Math.random()*3)
     }
@@ -88,6 +89,7 @@ function update(progress) {
         clearInterval(foodSpawnInterval)
 
         foodSpawnInterval = setInterval(function() {
+            if (settings.limitFood===true && countDefined(foodArray)>limitFoodVal) {return false}
             for (let i = 0; i<=spawnFood; i++) {
                 createNewFood(Math.random()*mapWidth,Math.random()*mapHeight,1,4+Math.random()*3)
             }
@@ -116,15 +118,7 @@ function draw(progress) {
     startDrawFrame = startDraw_perf
     drawFrame = startDrawFrame-endDrawFrame
     endDrawFrame = performance.now()
-    let countDefined = function(array) {
-        let arrayReturn = []
-        for (let i = 0; i < array.length; i++) {
-            if (array[i]!==undefined) {
-                arrayReturn.push(array[i])
-            }
-        }
-        return arrayReturn.length
-    }
+
 
     let getAvgStats = function(name) {
         let returnVal = 0

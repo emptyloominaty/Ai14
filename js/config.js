@@ -6,6 +6,8 @@ let mapWidth = 1600
 let mapHeight = 900
 
 let backgroundColor = "#000000"
+let limitFoodVal = 50
+let limitAiVal = 500
 
 //Settings
 let settings = {
@@ -15,13 +17,15 @@ let settings = {
     showId: false,
     showFamily: false,
     showFGS: true,
+    limitFood: false,
+    limitAi: false,
 
     advancedDrawingMode: false, //FALSE!
 }
 
 let toggleBool = ["off","on"]
-let settingsNames = ["Show Energy","Show Text","Show Age","Show Id","Show Family","Show FGS","","",]
-let settingsVal = ["showName","showText","showAge","showId","showFamily","showFGS","","",]
+let settingsNames = ["Show Energy","Show Text","Show Age","Show Id","Show Family","Show FGS","Limit Food","Limit Ai"]
+let settingsVal = ["showName","showText","showAge","showId","showFamily","showFGS","limitFood","limitAi"]
 
 let el_btnSetting = [document.getElementById("btnSetting0"),
     document.getElementById("btnSetting1"),

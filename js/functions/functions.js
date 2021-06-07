@@ -1,3 +1,12 @@
+let countDefined = function(array) {
+    let arrayReturn = []
+    for (let i = 0; i < array.length; i++) {
+        if (array[i]!==undefined) {
+            arrayReturn.push(array[i])
+        }
+    }
+    return arrayReturn.length
+}
 
 let getArrayStats = function() {
     let name = document.getElementById("getStats").value
